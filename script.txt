@@ -1,16 +1,16 @@
 -- LIGHTNING HUB V10
--- Prepared by: halilibrahimseviml1
+-- Prepared by: halilibrahimseviml1 , Gemini AI ☠️
 
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-if CoreGui:FindFirstChild("DynamicCommandGeneratorGui") then
+if CoreGui:FindFirstChild("LightningHubDynamicCommandGeneratorGui") then
     CoreGui.DynamicCommandGeneratorGui:Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DynamicCommandGeneratorGui"
+ScreenGui.Name = "LightningHubDynamicCommandGeneratorGui"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
