@@ -1,0 +1,205 @@
+-- LIGHTNING HUB V10
+-- Prepared by: halilibrahimseviml1
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+if CoreGui:FindFirstChild("DynamicCommandGeneratorGui") then
+    CoreGui.DynamicCommandGeneratorGui:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DynamicCommandGeneratorGui"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 350, 0, 520)
+MainFrame.Position = UDim2.new(0.5, -175, 0.5, -260)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundTransparency = 1
+Title.Text = "Dynamic Command Generator"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 16
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
+
+-- Prefix Box
+local PrefixBox = Instance.new("TextBox")
+PrefixBox.Size = UDim2.new(0.9, 0, 0, 35)
+PrefixBox.Position = UDim2.new(0.05, 0, 0, 45)
+PrefixBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+PrefixBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+PrefixBox.PlaceholderText = "Prefix (e.g., :, ., /)"
+PrefixBox.Text = ":"
+PrefixBox.TextSize = 14
+PrefixBox.Font = Enum.Font.Gotham
+PrefixBox.Parent = MainFrame
+
+local PrefixCorner = Instance.new("UICorner")
+PrefixCorner.CornerRadius = UDim.new(0, 6)
+PrefixCorner.Parent = PrefixBox
+
+-- Command Box
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.9, 0, 0, 35)
+TextBox.Position = UDim2.new(0.05, 0, 0, 88)
+TextBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.PlaceholderText = "Enter command (e.g: unff, kill)"
+TextBox.Text = "unff"
+TextBox.TextSize = 14
+TextBox.Font = Enum.Font.Gotham
+TextBox.Parent = MainFrame
+
+local TextBoxCorner = Instance.new("UICorner")
+TextBoxCorner.CornerRadius = UDim.new(0, 6)
+TextBoxCorner.Parent = TextBox
+
+-- Include Self Toggle Button
+local includeSelf = false
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0.9, 0, 0, 30)
+ToggleButton.Position = UDim2.new(0.05, 0, 0, 131)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Text = "Include Self: OFF"
+ToggleButton.TextSize = 13
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Parent = MainFrame
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 6)
+ToggleCorner.Parent = ToggleButton
+
+-- Scrolling Frame for Commands
+local ScrollingFrame = Instance.new("ScrollingFrame")
+ScrollingFrame.Size = UDim2.new(0.9, 0, 0, 160)
+ScrollingFrame.Position = UDim2.new(0.05, 0, 0, 170)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+ScrollingFrame.Parent = MainFrame
+
+local ScrollCorner = Instance.new("UICorner")
+ScrollCorner.CornerRadius = UDim.new(0, 6)
+ScrollCorner.Parent = ScrollingFrame
+
+local OutputLabel = Instance.new("TextLabel")
+OutputLabel.Size = UDim2.new(1, -10, 1, 0)
+OutputLabel.Position = UDim2.new(0, 5, 0, 0)
+OutputLabel.BackgroundTransparency = 1
+OutputLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+OutputLabel.TextSize = 13
+OutputLabel.Font = Enum.Font.Code
+OutputLabel.TextXAlignment = Enum.TextXAlignment.Left
+OutputLabel.TextYAlignment = Enum.TextYAlignment.Top
+OutputLabel.TextWrapped = true
+OutputLabel.Parent = ScrollingFrame
+
+-- Help Section
+local HelpLabel = Instance.new("TextLabel")
+HelpLabel.Size = UDim2.new(0.9, 0, 0, 85)
+HelpLabel.Position = UDim2.new(0.05, 0, 0, 338)
+HelpLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+HelpLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+HelpLabel.TextSize = 11
+HelpLabel.Font = Enum.Font.Gotham
+HelpLabel.TextWrapped = true
+HelpLabel.TextXAlignment = Enum.TextXAlignment.Left
+HelpLabel.TextYAlignment = Enum.TextYAlignment.Top
+HelpLabel.Text = "Help: Paste these commands into chat or cmdbar. Everyone in the server will be affected. Unless you changed settings in-game, do not change this symbol (:) because it is default for everyone."
+HelpLabel.Parent = MainFrame
+
+local HelpCorner = Instance.new("UICorner")
+HelpCorner.CornerRadius = UDim.new(0, 6)
+HelpCorner.Parent = HelpLabel
+
+-- Copy Button
+local CopyButton = Instance.new("TextButton")
+CopyButton.Size = UDim2.new(0.9, 0, 0, 35)
+CopyButton.Position = UDim2.new(0.05, 0, 0, 435)
+CopyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyButton.Text = "Copy"
+CopyButton.TextSize = 14
+CopyButton.Font = Enum.Font.GothamBold
+CopyButton.Parent = MainFrame
+
+local ButtonCorner = Instance.new("UICorner")
+ButtonCorner.CornerRadius = UDim.new(0, 6)
+ButtonCorner.Parent = CopyButton
+
+-- Update Commands Logic
+local function updateCommands()
+    local prefix = PrefixBox.Text
+    local inputCmd = TextBox.Text:gsub("^%s+", ""):gsub("%s+$", "")
+    
+    if inputCmd == "" then
+        OutputLabel.Text = ""
+        return
+    end
+    
+    local resultText = ""
+    for _, player in ipairs(Players:GetPlayers()) do
+        if includeSelf or player ~= LocalPlayer then
+            resultText = resultText .. prefix .. inputCmd .. " " .. player.Name .. "\n"
+        end
+    end
+    OutputLabel.Text = resultText
+end
+
+-- Toggle Logic
+ToggleButton.MouseButton1Click:Connect(function()
+    includeSelf = not includeSelf
+    if includeSelf then
+        ToggleButton.Text = "Include Self: ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 180, 80)
+    else
+        ToggleButton.Text = "Include Self: OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+    updateCommands()
+end)
+
+PrefixBox:GetPropertyChangedSignal("Text"):Connect(updateCommands)
+TextBox:GetPropertyChangedSignal("Text"):Connect(updateCommands)
+Players.PlayerAdded:Connect(updateCommands)
+Players.PlayerRemoving:Connect(updateCommands)
+
+updateCommands()
+
+-- Copy Logic
+CopyButton.MouseButton1Click:Connect(function()
+    if OutputLabel.Text ~= "" then
+        if setclipboard then
+            setclipboard(OutputLabel.Text)
+            CopyButton.Text = "Copied!"
+            task.wait(1.5)
+            CopyButton.Text = "Copy"
+        elseif toclipboard then
+            toclipboard(OutputLabel.Text)
+            CopyButton.Text = "Copied!"
+            task.wait(1.5)
+            CopyButton.Text = "Copy"
+        else
+            CopyButton.Text = "Not Supported!"
+            task.wait(1.5)
+            CopyButton.Text = "Copy"
+        end
+    end
+end)
